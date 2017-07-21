@@ -1,0 +1,111 @@
+--- a/configure.ac	2017-06-06 16:11:53.011863776 +0100
++++ b/configure.ac	2017-06-06 16:12:04.855986701 +0100
+@@ -79,7 +79,6 @@
+   libxml-2.0 >= $LIBXML2_MIN_VERSION
+   libusb-1.0 >= $LIBUSB_MIN_VERSION
+   spice-client-gtk-3.0 >= $SPICE_GTK_MIN_VERSION
+-  gudev-1.0 >= $GUDEV_MIN_VERSION
+   libosinfo-1.0 >= $OSINFO_MIN_VERSION
+   uuid >= $UUID_REQUIRED
+   libsoup-2.4 >= $LIBSOUP_REQUIRED
+@@ -140,7 +140,6 @@
+   glib-2.0
+   gtk+-3.0
+   gtk-vnc-2.0
+-  gudev-1.0
+   libarchive
+   libosinfo-1.0
+   libsoup-2.4
+--- a/src/installer-media.vala	2017-06-06 15:58:26.991849922 +0100
++++ b/src/installer-media.vala	2017-06-06 16:11:00.247315838 +0100
+@@ -1,7 +1,7 @@
+ // This file is part of GNOME Boxes. License: LGPLv2+
+ 
+ using Osinfo;
+-using GUdev;
++//using GUdev;
+ using GVirConfig;
+ 
+ private class Boxes.InstallerMedia : GLib.Object {
+@@ -63,16 +63,16 @@
+     public async InstallerMedia.for_path (string       path,
+                                           MediaManager media_manager,
+                                           Cancellable? cancellable) throws GLib.Error {
+-        var device = yield get_device_from_path (path, media_manager.client, cancellable);
++//        var device = yield get_device_from_path (path, media_manager.client, cancellable);
+ 
+-        if (device != null)
+-            yield get_media_info_from_device (device, media_manager.os_db);
+-        else {
++//        if (device != null)
++//            yield get_media_info_from_device (device, media_manager.os_db);
++//        else {
+             from_image = true;
+             os_media = yield media_manager.os_db.guess_os_from_install_media_path (device_file, cancellable);
+             if (os_media != null)
+                 os = os_media.os;
+-        }
++//        }
+ 
+         label_setup ();
+ 
+@@ -171,6 +171,7 @@
+         }
+     }
+ 
++#if 0
+     private async GUdev.Device? get_device_from_path (string path, Client client, Cancellable? cancellable) {
+         try {
+             var mount_dir = File.new_for_path (path);
+@@ -253,6 +254,7 @@
+ 
+         return decoded;
+     }
++#endif
+ 
+     private void eject_cdrom_media (Domain domain) {
+         var devices = domain.get_devices ();
+--- a/src/media-manager.vala	2017-07-20 18:48:50.169930142 +0100
++++ b/src/media-manager.vala	2017-07-20 18:50:41.546895595 +0100
+@@ -1,14 +1,14 @@
+ // This file is part of GNOME Boxes. License: LGPLv2+
+ 
+ using Osinfo;
+-using GUdev;
++//using GUdev;
+ using Tracker;
+ 
+ private class Boxes.MediaManager : Object {
+     private static MediaManager media_manager;
+ 
+     public OSDatabase os_db { get; private set; }
+-    public Client client { get; private set; }
++//    public Client client { get; private set; }
+ 
+     public delegate void InstallerRecognized (Osinfo.Media os_media, Osinfo.Os os);
+ 
+@@ -88,6 +88,7 @@
+     public async GLib.List<InstallerMedia> list_installer_medias () {
+         var list = new GLib.List<InstallerMedia> ();
+ 
++#if 0
+         // First HW media
+         var enumerator = new GUdev.Enumerator (client);
+         // We don't want to deal with partitions to avoid duplicate medias
+@@ -117,6 +118,7 @@
+                 warning ("Failed to get information on device '%s': %s. Ignoring..", path, error.message);
+             }
+         }
++#endif
+ 
+         if (connection == null)
+             return list;
+@@ -181,7 +183,7 @@
+     }
+ 
+     private MediaManager () {
+-        client = new GUdev.Client ({"block"});
++//        client = new GUdev.Client ({"block"});
+         os_db = new OSDatabase ();
+         os_db.load.begin ();
+         try {

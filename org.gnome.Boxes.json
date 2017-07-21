@@ -1,0 +1,202 @@
+{
+    "app-id": "org.gnome.Boxes",
+    "runtime": "org.gnome.Platform",
+    "runtime-version": "3.24",
+    "sdk": "org.gnome.Sdk",
+    "command": "gnome-boxes",
+    "finish-args": [
+        /* X11 + XShm access */
+        "--share=ipc", "--socket=x11",
+        /* Wayland access */
+        "--socket=wayland",
+        /* Needs to talk to the network to get currency data */
+        "--share=network",
+        /* Needed for dconf to work */
+        "--filesystem=xdg-run/dconf", "--filesystem=~/.config/dconf:ro",
+        "--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
+    ],
+    "build-options" : {
+        "cflags": "-O2 -g",
+        "cxxflags": "-O2 -g"
+    },
+    "modules": [
+        {
+            "name": "check",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://github.com/libcheck/check/releases/download/0.11.0/check-0.11.0.tar.gz",
+                    "sha256": "24f7a48aae6b74755bcbe964ce8bc7240f6ced2141f8d9cf480bc3b3de0d5616"
+                }
+            ]
+        },
+        {
+            "name": "gtk-vnc",
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "git://git.gnome.org/gtk-vnc",
+                    "branch": "v0.7.1"
+                },
+                {
+                    "type": "patch",
+                    "path": "gtk-vnc-no-tools.patch"
+                }
+            ]
+        },
+        {
+            "name": "libnl",
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://www.infradead.org/~tgr/libnl/files/libnl-1.1.4.tar.gz",
+                    "sha256": "4f80c21fe5bbcdde6e72b59b4f98306063a41421f909887c34e58d93e746d063"
+                }
+            ]
+        },
+        {
+            "name": "libosinfo",
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://gitlab.com/libosinfo/libosinfo.git",
+                    "branch": "v1.0.0"
+                },
+                {
+                    "type": "file",
+                    "url": "http://pciids.sourceforge.net/v2.2/pci.ids",
+                    "sha256": "ef8dcc7f25bd9cee9e604c3f71403eac04c0fd409df057f3b8dd4f81e32aaf82"
+                },
+                {
+                    "type": "file",
+                    "url": "http://www.linux-usb.org/usb.ids",
+                    "sha256": "79fc6d713add6ebb38916f0f08f682816687e69443f6335fff58a159fe86ded4"
+                }
+            ]
+        },
+        {
+            "name": "libusb",
+            "config-opts": ["--disable-udev"],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "https://github.com/libusb/libusb.git",
+                    "branch": "v1.0.21"
+                }
+            ]
+        },
+        {
+            "name": "libvirt",
+            "config-opts": ["--without-storage-mpath"],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "git://libvirt.org/libvirt.git",
+                    "branch": "v3.4.0"
+                },
+                {
+                    "type": "patch",
+                    "path": "libvirt-bootstrap-gettext.patch"
+                }
+            ]
+        },
+        {
+            "name": "libvirt-glib",
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "git://libvirt.org/libvirt-glib.git",
+                    "branch": "v1.0.0"
+                }
+            ]
+        },
+        {
+            "name": "spice-protocol",
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "git://anongit.freedesktop.org/spice/spice-protocol",
+                    "branch": "v0.12.13"
+                }
+            ]
+        },
+        {
+            "name": "python-pyparsing",
+            "buildsystem": "simple",
+            "build-commands": [
+                "pip3 install --prefix=/app pyparsing-2.2.0-py2.py3-none-any.whl"
+            ],
+            "sources": [
+                {
+                   "type": "file",
+                   "url": "https://pypi.python.org/packages/6a/8a/718fd7d3458f9fab8e67186b00abdd345b639976bc7fb3ae722e1b026a50/pyparsing-2.2.0-py2.py3-none-any.whl#md5=7247e7896688eff4bc8c7fc5d0cdd2b0",
+                   "sha256": "fee43f17a9c4087e7ed1605bd6df994c6173c1e977d7ade7b651292fab2bd010"
+                }
+            ]
+        },
+        {
+            "name": "python-six",
+            "buildsystem": "simple",
+            "build-commands": [
+                "pip3 install --prefix=/app six-1.10.0-py2.py3-none-any.whl"
+            ],
+            "sources": [
+                {
+                   "type": "file",
+                   "url": "https://pypi.python.org/packages/c8/0a/b6723e1bc4c516cb687841499455a8505b44607ab535be01091c0f24f079/six-1.10.0-py2.py3-none-any.whl#md5=3ab558cf5d4f7a72611d59a81a315dc8",
+                   "sha256": "0ff78c403d9bccf5a425a6d31a12aa6b47f1c21ca4dc2573a7e2f32a97335eb1"
+                }
+            ]
+        },
+        {
+            "name": "spice-gtk",
+            "build-options" : {
+                "env": {
+                    "PYTHONPATH": "/app"
+                }
+            },
+            "config-opts": ["--disable-controller", "--enable-vala",
+                            "--disable-gtk-doc", "--enable-python-checks"],
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "git://anongit.freedesktop.org/spice/spice-gtk"
+                }
+            ]
+        },
+        {
+            "name": "tracker",
+            "cleanup": [ "/bin", "/etc", "/libexec" ],
+            "config-opts": [ "--disable-miner-apps", "--disable-static",
+                             "--disable-tracker-extract", "--disable-tracker-needle",
+                             "--disable-tracker-preferences", "--disable-artwork",
+                             "--disable-tracker-writeback", "--disable-miner-user-guides",
+                             "--with-bash-completion-dir=no" ],
+            "sources": [
+                {
+                    "type": "archive",
+                    "url": "https://ftp.gnome.org/pub/GNOME/sources/tracker/1.13/tracker-1.13.0.tar.xz",
+                    "sha256": "590e9691fde6eda2d6c3fbc31bd18add2af5b314bf3ed2d5e1607142f2673a49"
+                }
+            ]
+        },
+        {
+            "name": "gnome-boxes",
+            "sources": [
+                {
+                    "type": "git",
+                    "url": "git://git.gnome.org/gnome-boxes",
+                    "branch": "gnome-3-24"
+                },
+                {
+                    "type": "patch",
+                    "path": "gnome-boxes-disable-gudev.patch"
+                },
+                {
+                    "type": "patch",
+                    "path": "gnome-boxes-disable-spice-usb.patch"
+                }
+            ]
+        }
+    ]
+}

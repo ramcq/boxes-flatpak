@@ -1,0 +1,8 @@
+--- gtk-vnc-1/Makefile.am~	2017-06-06 11:44:41.115869019 +0100
++++ gtk-vnc-1/Makefile.am	2017-06-06 11:44:53.347977115 +0100
+@@ -1,4 +1,4 @@
+-SUBDIRS = src tools examples po vapi
++SUBDIRS = src examples po vapi
+ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS}
+ 
+ pkgconfig_DATA = $(PACKAGE)-$(GTK_VNC_API_VERSION).pc gvnc-1.0.pc
