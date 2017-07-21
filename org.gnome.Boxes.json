@@ -157,6 +157,7 @@
             },
             "config-opts": ["--disable-controller", "--enable-vala",
                             "--disable-gtk-doc", "--enable-python-checks"],
+            /* using git master to avoid perl Text::CSV build dep - 0.34 should avoid */
             "sources": [
                 {
                     "type": "git",

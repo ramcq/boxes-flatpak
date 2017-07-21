@@ -1,0 +1,7 @@
+integrate kvm
+figure out how to run a local libvirtd on demand
+add cleanups
+switch to tarballs across the board
+figure out what to do properly with usb access
+make gudev optional and understand functional implications
+bugs: libosinfo doesn't seem to work
